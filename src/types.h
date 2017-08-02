@@ -18,8 +18,7 @@ struct server;
 struct client;
 struct pong_ball;
 struct network_msg;
-struct position;
-struct paddle;
+struct pong_paddle;
 struct pong_window;
 struct color;
 
@@ -58,10 +57,12 @@ struct pong_ball {
 	color_t color;
 };
 
-typedef struct paddle paddle_t;
-struct paddle {
-	size_t size;
+typedef struct pong_paddle pong_paddle_t;
+struct pong_paddle {
+	size_t height;
+	size_t width;
 	size_t velocity;
+	color_t color;
 	SDL_Rect rect;
 };
 
