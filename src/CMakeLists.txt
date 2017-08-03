@@ -7,6 +7,10 @@ add_executable(${PROJECT_NAME}
 	pong_ball.c
 	pong_window.c
 	pong_game.c
+	pong_msg.c
+	color.c
+	pong_server.c
+	pong_client.c
 	)
 
 find_package(SDL2 REQUIRED)
