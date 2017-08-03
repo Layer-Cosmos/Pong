@@ -6,7 +6,9 @@
 #include <math.h>
 #include <stdio.h>
 
-void pong_server_send_ball(const server_t *, const pong_ball_t *);
-void pong_server_send_paddle(const server_t *, const pong_paddle_t *);
+void pong_server_init(pong_server_t *, const int, const size_t);
+void pong_server_send_ball(const pong_server_t *);
+void pong_server_send_paddle(const pong_server_t *);
+void pong_server_wait_conn(pong_server_t *);
 
 #endif

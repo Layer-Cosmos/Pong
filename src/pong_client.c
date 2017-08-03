@@ -36,11 +36,21 @@ static char *key_msg(const enum key key_pressed) {
 	return ret;
 }
 
-void pong_client_send_key(const client_t *client, const enum key key_pressed) {
+void pong_client_init(pong_client_t *pg_clt) {
+	pg_clt->client = client_init();
+	pg_clt->ball = NULL;
+	pg_clt->paddle = NULL;
+}
+
+void pong_client_connect(pong_client_t *pg_clt, const char *ip, const int port) {
+	client_connect(pg_clt->client, ip, port);
+}
+
+void pong_client_send_key(const pong_client_t *client, const enum key key_pressed) {
 	char *msg_to_send;
 
 	msg_to_send = key_msg(key_pressed);
-	client_send_msg(client, msg_to_send);
+	client_send_msg(client->client, msg_to_send);
 
 	free(msg_to_send);
 }

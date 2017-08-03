@@ -49,10 +49,21 @@ static void send_coordinates(const server_t *server, const char *prefix, const s
 	free(msg);
 }
 
-void pong_server_send_ball(const server_t *server, const pong_ball_t *ball) {
-	send_coordinates(server, BALL_NETWORK_MSG_PREFIX, ball->rect.x, ball->rect.y);
+void pong_server_send_ball(const pong_server_t *pg_server) {
+	send_coordinates(pg_server->server, BALL_NETWORK_MSG_PREFIX, pg_server->ball->rect.x, pg_server->ball->rect.y);
 }
 
-void pong_server_send_paddle(const server_t *server, const pong_paddle_t *paddle) {
-	send_coordinates(server, PADDLE_NETWORK_MSG_PREFIX, paddle->rect.x, paddle->rect.y);
+void pong_server_send_paddle(const pong_server_t *pg_server) {
+	send_coordinates(pg_server->server, PADDLE_NETWORK_MSG_PREFIX, pg_server->paddle->rect.x, pg_server->paddle->rect.y);
+}
+
+void pong_server_init(pong_server_t *pg_server, const int port, const size_t nb_conn) {
+	pg_server->server = server_init(port, nb_conn);
+	pg_server->ball = NULL;
+	pg_server->paddle = NULL;
+	pg_server->client = NULL;
+}
+
+void pong_server_wait_conn(pong_server_t *pg_server) {
+	server_wait_conn(pg_server->server);
 }

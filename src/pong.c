@@ -1,8 +1,10 @@
+#include "client.h"
 #include "pong_ball.h"
 #include "pong_game.h"
 #include "pong_window.h"
+#include "server.h"
 
-static int manage_events() {
+/*static int manage_events() {
 	SDL_Event event;
 
 	SDL_PollEvent(&event);
@@ -11,40 +13,22 @@ static int manage_events() {
 	}
 
 	return 0;
-}
+}*/
 
 int main() {
-	pong_ball_t *ball;
-	pong_window_t *window;
-	size_t x, y;
-	int stop;
-	color_t ball_color;
-	color_t bg_color;
+	client_t *client;
+	server_t *server;
+	char *msg;
 
-	ball_color.b = 0;
-	ball_color.g = 0;
-	ball_color.r = 0;
+	client = client_init();
+	server = server_init(51710, 3);
 
-	bg_color.r = 255;
-	bg_color.g = 255;
-	bg_color.b = 255;
+	client_connect(client, "127.0.0.1", 51710);
+	server_wait_conn(server);
 
-	window = pong_window_new(300, bg_color);
+	client_send_msg(client, "cacaprout");
+	msg = server_next_msg(server);
 
-	ball = pong_ball_init(1, 20, ball_color);
-	x = 20;
-	y = 20;
-	stop = 0;
-
-	while (!stop) {
-		stop = manage_events();
-
-		pong_window_draw(window);
-		pong_ball_draw(ball, window, x, y);
-
-		//pong_ball_draw(ball, window, x, y);
-		usleep(5);
-	}
-
-	pong_game_quit(window);
+	server_kill(server);
+	printf("%s\n", msg);
 }

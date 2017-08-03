@@ -68,5 +68,9 @@ int server_send_msg(const server_t *server, const char *msg) {
 }
 
 char *server_next_msg(const server_t *server) {
-	return network_msg_next(server->sock);
+	return network_msg_next(server->sock_client);
+}
+
+void server_kill(const server_t *server) {
+	kill(server->sock, SIGKILL);
 }
