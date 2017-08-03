@@ -1,4 +1,14 @@
 #include "coordinates.h"
 
-void coordinates_decrease(size_t *x, size_t *y, const size_t velocity) {
+void coordinates_decrease(SDL_Rect *rect) {
+	rect->x--;
+	rect->y--;
+}
+
+void coordinates_decrease_x(SDL_Rect *rect) {
+	rect->x--;
+}
+
+void coordinates_decrease_y(SDL_Rect *rect) {
+	rect->y--;
 }

@@ -6,6 +6,7 @@
 
 client_t *client_init();
 int client_connect(client_t *, const char *, const int port);
+int client_send_msg(const client_t *, const char *);
 char *client_msg_next(const client_t *);
 int client_connect_send(const client_t *);
 

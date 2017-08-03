@@ -1,6 +1,6 @@
 #include "color.h"
 
-const color_t color_black() {
+color_t color_black() {
 	static color_t black;
 
 	black.r = 0;
@@ -10,7 +10,7 @@ const color_t color_black() {
 	return black;
 }
 
-const color_t color_white() {
+color_t color_white() {
 	static color_t white;
 
 	white.r = 255;

@@ -10,8 +10,15 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define END_NETWORK_MSG '\n'
+#define END_NETWORK_MSG "\n"
 #define MSG_BUFFER_SIZE 2048
+
+#define BALL_NETWORK_MSG_PREFIX "b_"
+#define PADDLE_NETWORK_MSG_PREFIX "p_"
+#define KEY_NETWORK_MSG_PREFIX "k_"
+#define KEY_DOWN_NETWORK_MSG "down"
+#define KEY_UP_NETWORK_MSG "up"
+
 #define SDL_ERROR fprintf(stderr, "SDL Error: %s", SDL_GetError())
 
 struct server;
@@ -22,57 +29,60 @@ struct pong_paddle;
 struct pong_window;
 struct color;
 
+enum key {
+    DOWN_KEY,
+    UP_KEY
+};
+
 typedef int socket_t;
 
 typedef struct client client_t;
 struct client {
-	socket_t sock;
+    socket_t sock;
 };
 
 typedef struct server server_t;
 struct server {
-	socket_t sock;
-	socket_t sock_client;
+    socket_t sock;
+    socket_t sock_client;
 };
 
 typedef struct network_msg network_msg_t;
 struct network_msg {
-	char buffer[MSG_BUFFER_SIZE];
-	size_t length;
+    char buffer[MSG_BUFFER_SIZE];
+    size_t length;
 };
 
 typedef struct color color_t;
 struct color {
-	Uint8 r;
-	Uint8 g;
-	Uint8 b;
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
 };
 
 typedef struct pong_ball pong_ball_t;
 struct pong_ball {
-	size_t velocity;
-	size_t size;
-	size_t angle;
-	SDL_Rect rect;
-	color_t color;
+    size_t velocity;
+    size_t size;
+    size_t angle;
+    SDL_Rect rect;
+    color_t color;
 };
 
 typedef struct pong_paddle pong_paddle_t;
 struct pong_paddle {
-	size_t height;
-	size_t width;
-	size_t velocity;
-	color_t color;
-	SDL_Rect rect;
+    size_t velocity;
+    color_t color;
+    SDL_Rect rect;
 };
 
 typedef struct pong_window pong_window_t;
 struct pong_window {
-	SDL_Window *win;
-	SDL_Renderer *ren;
-	color_t bg_color;
-	size_t height;
-	size_t width;
+    SDL_Window* win;
+    SDL_Renderer* ren;
+    color_t bg_color;
+    size_t height;
+    size_t width;
 };
 
 #endif

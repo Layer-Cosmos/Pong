@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-const color_t color_black();
-const color_t color_white();
+color_t color_black();
+color_t color_white();
 
 #endif

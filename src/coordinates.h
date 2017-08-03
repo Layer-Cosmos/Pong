@@ -3,6 +3,8 @@
 
 #include "types.h"
 
-void coordinates_decrease(size_t *, size_t *, const size_t);
+void coordinates_decrease(SDL_Rect *);
+void coordinates_decrease_x(SDL_Rect *);
+void coordinates_decrease_y(SDL_Rect *);
 
 #endif
