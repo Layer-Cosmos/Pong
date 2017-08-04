@@ -53,8 +53,12 @@ void pong_server_send_ball(const pong_server_t *pg_server) {
 	send_coordinates(pg_server->server, BALL_NETWORK_MSG_PREFIX, pg_server->ball->rect.x, pg_server->ball->rect.y);
 }
 
-void pong_server_send_paddle(const pong_server_t *pg_server) {
-	send_coordinates(pg_server->server, PADDLE_NETWORK_MSG_PREFIX, pg_server->paddle->rect.x, pg_server->paddle->rect.y);
+void pong_server_send_spaddle(const pong_server_t *pg_server) {
+	send_coordinates(pg_server->server, SPADDLE_NETWORK_MSG_PREFIX, pg_server->paddle->rect.x, pg_server->paddle->rect.y);
+}
+
+void pong_server_send_cpaddle(const pong_server_t *pg_server) {
+	send_coordinates(pg_server->server, CPADDLE_NETWORK_MSG_PREFIX, pg_server->client->paddle->rect.x, pg_server->paddle->rect.y);
 }
 
 void pong_server_init(pong_server_t *pg_server, const int port, const size_t nb_conn) {

@@ -14,7 +14,8 @@
 #define MSG_BUFFER_SIZE 2048
 
 #define BALL_NETWORK_MSG_PREFIX "b_"
-#define PADDLE_NETWORK_MSG_PREFIX "p_"
+#define SPADDLE_NETWORK_MSG_PREFIX "sp_"
+#define CPADDLE_NETWORK_MSG_PREFIX "cp_"
 #define KEY_NETWORK_MSG_PREFIX "k_"
 #define KEY_DOWN_NETWORK_MSG "down"
 #define KEY_UP_NETWORK_MSG "up"
@@ -34,6 +35,11 @@ struct pong_server;
 enum key {
 	DOWN_KEY,
 	UP_KEY
+};
+
+enum info_type {
+	PADDLE,
+	BALL
 };
 
 typedef int socket_t;
@@ -92,6 +98,7 @@ struct pong_client {
 	client_t *client;
 	pong_ball_t *ball;
 	pong_paddle_t *paddle;
+	pong_paddle_t *paddle_s;
 };
 
 typedef struct pong_server pong_server_t;

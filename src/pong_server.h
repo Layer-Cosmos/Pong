@@ -8,7 +8,8 @@
 
 void pong_server_init(pong_server_t *, const int, const size_t);
 void pong_server_send_ball(const pong_server_t *);
-void pong_server_send_paddle(const pong_server_t *);
+void pong_server_send_spaddle(const pong_server_t *);
+void pong_server_send_cpaddle(const pong_server_t *);
 void pong_server_wait_conn(pong_server_t *);
 
 #endif

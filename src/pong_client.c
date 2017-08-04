@@ -36,6 +36,40 @@ static char *key_msg(const enum key key_pressed) {
 	return ret;
 }
 
+static bool is_number(const char c) {
+	bool ret;
+
+	ret = (c < 58 && c > 47) ? true : false;
+
+	return ret;
+}
+
+static int str_to_int(const char *str, int *nb) {
+	int e;
+	size_t length;
+	size_t idx;
+
+	e = 0;
+	length = strlen(str);
+	idx = 0;
+	*nb = 0;
+
+	while (idx < length && is_number(str[idx])) {
+		*nb += pow(10, e) * (*nb) + (str[idx] - 48);
+		e++;
+		idx++;
+	}
+
+	return idx;
+}
+
+static void coord_from_str(const char *coord_str, SDL_Rect *rect) {
+	int idx;
+
+	idx = str_to_int(coord_str, &(rect->x));
+	str_to_int(coord_str + idx + 1, &(rect->y));
+}
+
 void pong_client_init(pong_client_t *pg_clt) {
 	pg_clt->client = client_init();
 	pg_clt->ball = NULL;
@@ -53,4 +87,18 @@ void pong_client_send_key(const pong_client_t *client, const enum key key_presse
 	client_send_msg(client->client, msg_to_send);
 
 	free(msg_to_send);
+}
+
+void pong_client_next_msg(pong_client_t *pg_clt) {
+	char *raw_msg;
+
+	raw_msg = network_msg_next(pg_clt->client->sock);
+	if (pong_msg_is_spaddle(raw_msg)) {
+		coord_from_str(raw_msg + strlen(SPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle_s->rect));
+
+	} else if (pong_msg_is_cpaddle(raw_msg)) {
+		coord_from_str(raw_msg + strlen(CPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle_s->rect));
+	} else if (pong_msg_is_ball(raw_msg)) {
+		coord_from_str(raw_msg + strlen(BALL_NETWORK_MSG_PREFIX), &(pg_clt->ball->rect));
+	}
 }

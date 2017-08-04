@@ -48,7 +48,7 @@ static void *pong_event_svr_thread(void *arg) {
 		}
 
 		if (moved) {
-			pong_server_send_paddle(arg_passed);
+			pong_server_send_spaddle(arg_passed);
 		}
 
 		usleep(5);

@@ -27,10 +27,18 @@ bool pong_msg_is_key(const char *msg) {
 	return ret;
 }
 
-bool pong_msg_is_paddle(const char *msg) {
+bool pong_msg_is_spaddle(const char *msg) {
 	bool ret;
 
-	ret = network_msg_starts_with(msg, PADDLE_NETWORK_MSG_PREFIX);
+	ret = network_msg_starts_with(msg, SPADDLE_NETWORK_MSG_PREFIX);
+
+	return ret;
+}
+
+bool pong_msg_is_cpaddle(const char *msg) {
+	bool ret;
+
+	ret = network_msg_starts_with(msg, CPADDLE_NETWORK_MSG_PREFIX);
 
 	return ret;
 }
