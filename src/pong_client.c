@@ -45,18 +45,15 @@ static bool is_number(const char c) {
 }
 
 static int str_to_int(const char *str, int *nb) {
-	int e;
 	size_t length;
 	size_t idx;
 
-	e = 0;
 	length = strlen(str);
 	idx = 0;
 	*nb = 0;
 
 	while (idx < length && is_number(str[idx])) {
-		*nb += pow(10, e) * (*nb) + (str[idx] - 48);
-		e++;
+		*nb = 10 * (*nb) + (str[idx] - 48);
 		idx++;
 	}
 
@@ -95,7 +92,6 @@ void pong_client_next_msg(pong_client_t *pg_clt) {
 	raw_msg = network_msg_next(pg_clt->client->sock);
 	if (pong_msg_is_spaddle(raw_msg)) {
 		coord_from_str(raw_msg + strlen(SPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle_s->rect));
-
 	} else if (pong_msg_is_cpaddle(raw_msg)) {
 		coord_from_str(raw_msg + strlen(CPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle_s->rect));
 	} else if (pong_msg_is_ball(raw_msg)) {

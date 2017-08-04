@@ -1,20 +1,16 @@
 #include "pong_server.h"
 
 static char *int_to_str(int nb) {
-	int e;
-	size_t length;
 	char *ret;
+	size_t length;
+	char buff[2048];
 
-	nb = abs(nb);
-	e = log10(nb);
-	length = e + 1;
+	snprintf(buff, 2048, "%d", nb);
+	length = strlen(buff);
+
 	ret = malloc(length + 1);
-
-	while (e >= 0) {
-		e = (int)log10(nb);
-		ret[e] = (nb / pow(10, e)) + 48;
-		nb = nb - pow(10, ret[e] - 48);
-	}
+	memmove(ret, buff, length);
+	ret[length] = '\0';
 
 	return ret;
 }
