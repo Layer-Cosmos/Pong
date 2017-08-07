@@ -1,15 +1,15 @@
 #include "network_msg.h"
 #include <sys/ioctl.h>
 
-static bool is_last_msg(const network_msg_t *msg) {
+static bool is_last_msg(const char *str) {
 	bool ret;
 	int idx_msg;
 	int idx_end;
 
-	idx_msg = msg->length - 1;
+	idx_msg = strlen(str) - 1;
 	idx_end = strlen(END_NETWORK_MSG) - 1;
 
-	while (idx_msg >= 0 && idx_end >= 0 && msg->buffer[idx_msg] == END_NETWORK_MSG[idx_end]) {
+	while (idx_msg >= 0 && idx_end >= 0 && str[idx_msg] == END_NETWORK_MSG[idx_end]) {
 		idx_msg--;
 		idx_end--;
 	}
@@ -19,33 +19,31 @@ static bool is_last_msg(const network_msg_t *msg) {
 	return ret;
 }
 
-static void save_msg_to_char(network_msg_t *msg, char **total_msg) {
-	size_t total_msg_length;
+static void save_char_to_str(const char c, char **str) {
+	size_t str_length;
 
-	if (*total_msg == NULL) {
-		*total_msg = malloc(msg->length + 1);
-		memcpy(*total_msg, msg->buffer, msg->length);
-		(*total_msg)[msg->length] = '\0';
+	if (*str == NULL) {
+		*str = malloc(1);
+		memmove(*str, &c, 1);
 	} else {
-		total_msg_length = strlen(*total_msg);
-		*total_msg = realloc(*total_msg, total_msg_length + msg->length + 1);
-		memcpy(*total_msg + total_msg_length, msg->buffer, msg->length);
-		total_msg_length += msg->length;
-		*total_msg[total_msg_length] = '\0';
+		str_length = strlen(*str);
+		*str = realloc(*str, str_length + 2);
+		memmove(*str + str_length, &c, 1);
 	}
 }
 
-static int read_cur_msg(const socket_t sock, network_msg_t *msg) {
-	int ret;
+static char read_cur_char(const socket_t sock) {
+	char buffer[1];
+	int msg_length;
+	char ret;
 
-	ret = 0;
-
-	memset(msg->buffer, 0, MSG_BUFFER_SIZE);
 	ioctl(sock, 0);
-	msg->length = read(sock, msg->buffer, MSG_BUFFER_SIZE);
+	msg_length = read(sock, buffer, 1);
 
-	if (msg->length == 0)
+	if (msg_length == 0)
 		ret = -1;
+	else
+		ret = buffer[0];
 
 	return ret;
 }
@@ -55,7 +53,7 @@ bool network_msg_starts_with(const char *msg, const char *start) {
 	size_t start_len;
 
 	start_len = strlen(start);
-	if (strncmp(msg, start, start_len) == 0)
+	if (msg != NULL && strncmp(msg, start, start_len) == 0)
 		ret = true;
 	else
 		ret = false;
@@ -64,16 +62,14 @@ bool network_msg_starts_with(const char *msg, const char *start) {
 }
 
 char *network_msg_next(const socket_t sock) {
-	network_msg_t msg;
 	char *ret;
+	char c;
 
 	ret = NULL;
-
 	do {
-		memset(msg.buffer, 0, MSG_BUFFER_SIZE);
-		read_cur_msg(sock, &msg);
-		save_msg_to_char(&msg, &ret);
-	} while (!is_last_msg(&msg));
+		c = read_cur_char(sock);
+		save_char_to_str(c, &ret);
+	} while (!is_last_msg(ret));
 
 	return ret;
 }
