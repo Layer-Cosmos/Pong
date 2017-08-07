@@ -59,5 +59,6 @@ void pong_window_draw(pong_window_t *window) {
 
 	color = &(window->bg_color);
 	SDL_SetRenderDrawColor(window->ren, color->r, color->g, color->b, SDL_ALPHA_OPAQUE);
+	SDL_RenderPresent(window->ren);
 	SDL_RenderClear(window->ren);
 }

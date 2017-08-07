@@ -84,6 +84,12 @@ struct pong_paddle {
 	SDL_Rect rect;
 };
 
+typedef struct pong_field pong_field_t;
+struct pong_field {
+	color_t color;
+	SDL_Rect rect;
+};
+
 typedef struct pong_window pong_window_t;
 struct pong_window {
 	SDL_Window *win;
