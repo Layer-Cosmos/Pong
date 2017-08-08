@@ -88,6 +88,8 @@ typedef struct pong_field pong_field_t;
 struct pong_field {
 	color_t color;
 	SDL_Rect rect;
+    int nbCube;
+    int middle;
 };
 
 typedef struct pong_window pong_window_t;

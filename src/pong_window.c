@@ -16,7 +16,7 @@ static void set_color(color_t *color, const color_t color_source) {
 }
 
 static void set_dimensions(pong_window_t *win, const size_t size) {
-	win->height = size;
+	win->height = size / 1.777;
 	win->width = size;
 }
 
@@ -32,7 +32,7 @@ pong_window_t *pong_window_new(const size_t size, const color_t color) {
 	    SDL_WINDOWPOS_CENTERED,
 	    SDL_WINDOWPOS_CENTERED,
 	    size,
-	    size,
+        (size / 1.777),
 	    SDL_WINDOW_OPENGL);
 
 	if (window == NULL) {

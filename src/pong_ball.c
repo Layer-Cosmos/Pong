@@ -1,5 +1,12 @@
 #include "pong_ball.h"
 
+pong_ball_t *pong_ball_move(pong_ball_t *ball, pong_window_t *window){
+
+
+
+
+}
+
 pong_ball_t *pong_ball_init(const int velocity, const size_t size, const color_t color) {
 	pong_ball_t *ret;
 

@@ -7,8 +7,8 @@
 
 #include "types.h"
 
-pong_field_t *pong_field_init(const size_t, const size_t, const color_t);
-int pong_field_draw(pong_field_t *, pong_window_t *, const size_t, const size_t);
+pong_field_t *pong_field_init(pong_window_t *, const color_t);
+int pong_field_draw(pong_field_t *, pong_window_t *);
 
 
 #endif //PONG_PONG_FIELD_H
