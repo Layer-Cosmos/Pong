@@ -71,6 +71,7 @@ char *server_next_msg(const server_t *server) {
 	return network_msg_next(server->sock_client);
 }
 
-void server_kill(const server_t *server) {
-	kill(server->sock, SIGKILL);
+void server_shutdown(const server_t *server) {
+	shutdown(server->sock, SHUT_RDWR);
+	close(server->sock);
 }

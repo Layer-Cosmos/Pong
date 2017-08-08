@@ -38,3 +38,7 @@ int client_send_msg(const client_t *client, const char *msg) {
 char *client_msg_next(const client_t *client) {
 	return network_msg_next(client->sock);
 }
+
+void client_disconnect(client_t *client) {
+	close(client->sock);
+}
