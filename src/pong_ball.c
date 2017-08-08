@@ -3,14 +3,14 @@
 pong_ball_t *pong_ball_move(pong_ball_t *ball, pong_window_t *window){
 
     if(ball->rect.x >= 0) {
-        if ((unsigned)ball->rect.x >= window->width) {
+        if ((unsigned)ball->rect.x >= (window->width - 20)) {
             ball->velocityX = -1.0f;
         } else if (ball->rect.x <= 0) {
             ball->velocityX = 1.0f;
         }
     }
     if(ball->rect.y >= 0) {
-        if ((unsigned)ball->rect.y >= window->height) {
+        if ((unsigned)ball->rect.y >= (window->height - 20)) {
             ball->velocityY = -1.0f;
         } else if (ball->rect.y <= 0) {
             ball->velocityY = 1.0f;
