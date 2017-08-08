@@ -70,7 +70,8 @@ struct color {
 
 typedef struct pong_ball pong_ball_t;
 struct pong_ball {
-	size_t velocity;
+	float velocityX;
+	float velocityY;
 	size_t size;
 	size_t angle;
 	SDL_Rect rect;

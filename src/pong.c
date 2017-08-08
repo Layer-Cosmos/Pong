@@ -56,6 +56,7 @@ int main() {
     pong_paddle_t *paddle;
     pong_window_t *window;
     pong_field_t *field;
+    pong_ball_t *ball;
 
     size_t height = 20;
     size_t width = 20;
@@ -65,6 +66,7 @@ int main() {
     window = pong_window_new(800, color_black());
     field = pong_field_init(window, color_white());
     paddle = pong_paddle_init(50, width, color_white());
+    ball = pong_ball_init(20, color_white());
 
     stop = 0;
 
@@ -74,6 +76,8 @@ int main() {
         pong_window_draw(window);
         pong_field_draw(field, window);
         pong_paddle_draw(paddle, window, height, width);
+        pong_ball_draw(ball, window);
+        pong_ball_move(ball, window);
         usleep(1);
     }
 

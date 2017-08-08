@@ -2,20 +2,42 @@
 
 pong_ball_t *pong_ball_move(pong_ball_t *ball, pong_window_t *window){
 
+    if(ball->rect.x >= 0) {
+        if ((unsigned)ball->rect.x >= window->width) {
+            ball->velocityX = -1.0f;
+        } else if (ball->rect.x <= 0) {
+            ball->velocityX = 1.0f;
+        }
+    }
+    if(ball->rect.y >= 0) {
+        if ((unsigned)ball->rect.y >= window->height) {
+            ball->velocityY = -1.0f;
+        } else if (ball->rect.y <= 0) {
+            ball->velocityY = 1.0f;
+        }
+    }
 
+    ball->rect.x += ball->velocityX;
+    ball->rect.y += ball->velocityY;
 
+    printf("%d\n", ball->rect.x);
 
+    return ball;
 }
 
-pong_ball_t *pong_ball_init(const int velocity, const size_t size, const color_t color) {
+pong_ball_t *pong_ball_init(const size_t size, const color_t color) {
 	pong_ball_t *ret;
 
 	ret = malloc(sizeof(*ret));
 
-	ret->velocity = velocity;
+	ret->velocityX = 1.0f;
+	ret->velocityY = 1.0f;
 
 	ret->rect.h = size;
 	ret->rect.w = size;
+
+    ret->rect.x = 50;
+    ret->rect.y = 20;
 
 	ret->color.r = color.r;
 	ret->color.g = color.g;
@@ -24,14 +46,12 @@ pong_ball_t *pong_ball_init(const int velocity, const size_t size, const color_t
 	return ret;
 }
 
-int pong_ball_draw(pong_ball_t *ball, pong_window_t *window, const size_t x, const size_t y) {
+int pong_ball_draw(pong_ball_t *ball, pong_window_t *window) {
 	SDL_Renderer *ren;
 	color_t *color;
 
 	color = &(ball->color);
 	ren = window->ren;
-	ball->rect.x = x;
-	ball->rect.y = y;
 
 	SDL_SetRenderDrawColor(ren, color->r, color->g, color->b, SDL_ALPHA_OPAQUE);
 	SDL_RenderFillRect(ren, &(ball->rect));
