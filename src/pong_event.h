@@ -5,6 +5,7 @@
 #include "pong_client.h"
 #include "pong_game.h"
 #include "pong_msg.h"
+#include "pong_paddle.h"
 #include "pong_server.h"
 #include "types.h"
 #include <pthread.h>

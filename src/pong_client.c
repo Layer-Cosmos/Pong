@@ -77,6 +77,10 @@ void pong_client_connect(pong_client_t *pg_clt, const char *ip, const int port) 
 	client_connect(pg_clt->client, ip, port);
 }
 
+void pong_client_disconnect(pong_client_t *pg_clt) {
+	client_disconnect(pg_clt->client);
+}
+
 void pong_client_send_key(const pong_client_t *client, const enum key key_pressed) {
 	char *msg_to_send;
 
@@ -97,4 +101,6 @@ void pong_client_next_msg(pong_client_t *pg_clt) {
 	} else if (pong_msg_is_ball(raw_msg)) {
 		coord_from_str(raw_msg + strlen(BALL_NETWORK_MSG_PREFIX), &(pg_clt->ball->rect));
 	}
+
+	free(raw_msg);
 }

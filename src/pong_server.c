@@ -57,6 +57,30 @@ void pong_server_send_cpaddle(const pong_server_t *pg_server) {
 	send_coordinates(pg_server->server, CPADDLE_NETWORK_MSG_PREFIX, pg_server->client->paddle->rect.x, pg_server->paddle->rect.y);
 }
 
+void pong_server_send_lost(const pong_server_t *pg_server) {
+	char *msg;
+	size_t length;
+
+	length = strlen(LOST_NETWORK_MSG) + strlen(END_NETWORK_MSG);
+	msg = malloc(length + 1);
+	snprintf(msg, length, "%s%s", LOST_NETWORK_MSG, END_NETWORK_MSG);
+	server_send_msg(pg_server->server, msg);
+
+	free(msg);
+}
+
+void pong_server_send_won(const pong_server_t *pg_server) {
+	char *msg;
+	size_t length;
+
+	length = strlen(WON_NETWORK_MSG) + strlen(END_NETWORK_MSG);
+	msg = malloc(length + 1);
+	snprintf(msg, length, "%s%s", WON_NETWORK_MSG, END_NETWORK_MSG);
+	server_send_msg(pg_server->server, msg);
+
+	free(msg);
+}
+
 void pong_server_init(pong_server_t *pg_server, const int port, const size_t nb_conn) {
 	pg_server->server = server_init(port, nb_conn);
 	pg_server->ball = NULL;
@@ -66,4 +90,25 @@ void pong_server_init(pong_server_t *pg_server, const int port, const size_t nb_
 
 void pong_server_wait_conn(pong_server_t *pg_server) {
 	server_wait_conn(pg_server->server);
+}
+
+void pong_server_shutdown(pong_server_t *pg_server) {
+	server_shutdown(pg_server->server);
+}
+
+void pong_server_next_msg(pong_server_t *pg_server) {
+	char *raw_msg;
+
+	raw_msg = server_next_msg(pg_server->server);
+	if (pong_msg_is_key(raw_msg)) {
+		if (pong_msg_is_key_up(raw_msg)) {
+			pong_paddle_go_up(pg_server->client->paddle);
+			pong_server_send_cpaddle(pg_server);
+		} else if (pong_msg_is_key_down(raw_msg)) {
+			pong_paddle_go_down(pg_server->client->paddle);
+			pong_server_send_cpaddle(pg_server);
+		}
+	}
+
+	free(raw_msg);
 }

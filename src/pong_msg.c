@@ -27,6 +27,36 @@ bool pong_msg_is_key(const char *msg) {
 	return ret;
 }
 
+bool pong_msg_is_key_up(const char *msg) {
+	bool ret;
+	int cmp_res;
+	size_t key_msg_pre_len;
+	size_t key_up_msg_len;
+
+	key_up_msg_len = strlen(KEY_UP_NETWORK_MSG);
+	key_msg_pre_len = strlen(KEY_NETWORK_MSG_PREFIX);
+
+	cmp_res = strncmp(msg + key_msg_pre_len, KEY_UP_NETWORK_MSG, key_up_msg_len);
+	ret = cmp_res == 0 ? true : false;
+
+	return ret;
+}
+
+bool pong_msg_is_key_down(const char *msg) {
+	bool ret;
+	int cmp_res;
+	size_t key_msg_pre_len;
+	size_t key_down_msg_len;
+
+	key_down_msg_len = strlen(KEY_DOWN_NETWORK_MSG);
+	key_msg_pre_len = strlen(KEY_NETWORK_MSG_PREFIX);
+
+	cmp_res = strncmp(msg + key_msg_pre_len, KEY_DOWN_NETWORK_MSG, key_down_msg_len);
+	ret = cmp_res == 0 ? true : false;
+
+	return ret;
+}
+
 bool pong_msg_is_spaddle(const char *msg) {
 	bool ret;
 
@@ -47,6 +77,22 @@ bool pong_msg_is_ball(const char *msg) {
 	bool ret;
 
 	ret = network_msg_starts_with(msg, BALL_NETWORK_MSG_PREFIX);
+
+	return ret;
+}
+
+bool pong_msg_is_lost(const char *msg) {
+	bool ret;
+
+	ret = network_msg_starts_with(msg, LOST_NETWORK_MSG);
+
+	return ret;
+}
+
+bool pong_msg_is_won(const char *msg) {
+	bool ret;
+
+	ret = network_msg_starts_with(msg, WON_NETWORK_MSG);
 
 	return ret;
 }
