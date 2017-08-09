@@ -19,6 +19,8 @@
 #define KEY_NETWORK_MSG_PREFIX "k_"
 #define KEY_DOWN_NETWORK_MSG "down"
 #define KEY_UP_NETWORK_MSG "up"
+#define LOST_NETWORK_MSG "lost"
+#define WON_NETWORK_MSG "won"
 
 #define SDL_ERROR fprintf(stderr, "SDL Error: %s", SDL_GetError())
 
@@ -70,8 +72,7 @@ struct color {
 
 typedef struct pong_ball pong_ball_t;
 struct pong_ball {
-	float velocityX;
-	float velocityY;
+	size_t velocity;
 	size_t size;
 	size_t angle;
 	SDL_Rect rect;
@@ -83,14 +84,6 @@ struct pong_paddle {
 	size_t velocity;
 	color_t color;
 	SDL_Rect rect;
-};
-
-typedef struct pong_field pong_field_t;
-struct pong_field {
-	color_t color;
-	SDL_Rect rect;
-    int nbCube;
-    int middle;
 };
 
 typedef struct pong_window pong_window_t;
