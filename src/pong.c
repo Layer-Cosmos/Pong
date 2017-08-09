@@ -54,6 +54,7 @@ int main() {
 		printf("%d %d\n", client.paddle_s->rect.x, client.paddle_s->rect.y);
 	}*/
     pong_paddle_t *paddle;
+    pong_paddle_t *paddle2;
     pong_window_t *window;
     pong_field_t *field;
     pong_ball_t *ball;
@@ -65,20 +66,21 @@ int main() {
 
     window = pong_window_new(800, color_black());
     field = pong_field_init(window, color_white());
-    paddle = pong_paddle_init(50, width, color_white());
+    paddle = pong_paddle_init(70, width, color_white());
+    paddle2 = pong_paddle_init(70, width, color_white());
     ball = pong_ball_init(20, color_white());
 
     stop = 0;
-
 
     while(!stop){
         stop = manage_events();
         pong_window_draw(window);
         pong_field_draw(field, window);
         pong_paddle_draw(paddle, window, height, width);
+        pong_paddle_draw(paddle2, window, window->width - 40, 100);
         pong_ball_draw(ball, window);
-        pong_ball_move(ball, window);
-        usleep(1);
+        pong_ball_update(ball, window, paddle);
+        usleep(16);
     }
 
 

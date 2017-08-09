@@ -1,6 +1,6 @@
 #include "pong_ball.h"
 
-pong_ball_t *pong_ball_move(pong_ball_t *ball, pong_window_t *window){
+pong_ball_t *pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_paddle_t *paddle){
 
     if(ball->rect.x >= 0) {
         if ((unsigned)ball->rect.x >= (window->width - 20)) {
@@ -17,10 +17,22 @@ pong_ball_t *pong_ball_move(pong_ball_t *ball, pong_window_t *window){
         }
     }
 
+    if((paddle->rect.x >= ball->rect.x + ball->rect.w)
+            || (paddle->rect.x + paddle->rect.w <= ball->rect.x)
+            || (paddle->rect.y >= ball->rect.y + ball->rect.h)
+            || (paddle->rect.y + paddle->rect.h <= ball->rect.y)){
+        //printf("pas de colision");
+    }else{
+        printf("collision\n");
+        ball->velocityX *= -1.0f;
+    }
+
+
+
     ball->rect.x += ball->velocityX;
     ball->rect.y += ball->velocityY;
 
-    printf("%d\n", ball->rect.x);
+    //printf("%d\n", ball->rect.x);
 
     return ball;
 }
