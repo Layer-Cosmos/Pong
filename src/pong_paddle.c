@@ -30,3 +30,11 @@ int pong_paddle_draw(pong_paddle_t *paddle, pong_window_t *window, const size_t 
 
 	return 0;
 }
+
+void pong_paddle_go_up(pong_paddle_t *paddle) {
+	paddle->rect.y--;
+}
+
+void pong_paddle_go_down(pong_paddle_t *paddle) {
+	paddle->rect.y++;
+}
