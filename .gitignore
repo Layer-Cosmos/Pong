@@ -1,2 +1,3 @@
 .ycm_extra*.py
-build
+build/
+bin/

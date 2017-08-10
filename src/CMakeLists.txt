@@ -13,9 +13,9 @@ add_executable(${PROJECT_NAME}
 	pong_server.c
 	pong_client.c
 	pong_event.c
-    pong_field.c)
+	pong_field.c)
 
 find_package(Threads REQUIRED)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES}${CMAKE_THREAD_LIBS_INIT} m)
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} m)

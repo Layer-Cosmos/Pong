@@ -1,29 +1,31 @@
 #include "client.h"
 #include "color.h"
 #include "pong_ball.h"
-#include "pong_paddle.h"
 #include "pong_client.h"
+#include "pong_field.h"
 #include "pong_game.h"
+#include "pong_paddle.h"
 #include "pong_server.h"
 #include "pong_window.h"
-#include "pong_field.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static int manage_events() {
+static int manage_events()
+{
     SDL_Event event;
 
     SDL_PollEvent(&event);
-    if(event.type == SDL_QUIT) {
-        return 1;
+    if (event.type == SDL_QUIT) {
+	return 1;
     }
     return 0;
 }
 
-int main() {
+int main()
+{
 
-	/*pong_client_t client;
+    /*pong_client_t client;
 	//pong_server_t server;
 	//int stop = 0;
 
@@ -53,11 +55,11 @@ int main() {
         pong_client_next_msg(&client);
 		printf("%d %d\n", client.paddle_s->rect.x, client.paddle_s->rect.y);
 	}*/
-    pong_paddle_t *paddle;
-    pong_paddle_t *paddle2;
-    pong_window_t *window;
-    pong_field_t *field;
-    pong_ball_t *ball;
+    pong_paddle_t* paddle;
+    pong_paddle_t* paddle2;
+    pong_window_t* window;
+    pong_field_t* field;
+    pong_ball_t* ball;
 
     size_t height = 20;
     size_t width = 20;
@@ -72,22 +74,16 @@ int main() {
 
     stop = 0;
 
-    while(!stop){
-        stop = manage_events();
-        pong_window_draw(window);
-        pong_field_draw(field, window);
-        pong_paddle_draw(paddle, window, height, width);
-        pong_paddle_draw(paddle2, window, window->width - 40, 100);
-        pong_ball_draw(ball, window);
-        pong_ball_update(ball, window, paddle);
-        usleep(16);
+    while (!stop) {
+	stop = manage_events();
+	pong_window_draw(window);
+	pong_field_draw(field, window);
+	pong_paddle_draw(paddle, window, height, width);
+	pong_paddle_draw(paddle2, window, window->width - 40, 100);
+	pong_ball_draw(ball, window);
+	pong_ball_update(ball, window, paddle);
+	usleep(100);
     }
 
-
-
-
     printf("salut");
-
-
-
 }
