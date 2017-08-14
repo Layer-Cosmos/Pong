@@ -1,5 +1,0 @@
-/home/bigfoot/Documents/ETNA/pong/build/CMakeFiles/rebuild_cache.dir
-/home/bigfoot/Documents/ETNA/pong/build/CMakeFiles/edit_cache.dir
-/home/bigfoot/Documents/ETNA/pong/build/src/CMakeFiles/rebuild_cache.dir
-/home/bigfoot/Documents/ETNA/pong/build/src/CMakeFiles/Pong.dir
-/home/bigfoot/Documents/ETNA/pong/build/src/CMakeFiles/edit_cache.dir

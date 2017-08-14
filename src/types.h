@@ -121,4 +121,10 @@ struct pong_field {
     int middle;
 };
 
+typedef struct sdl_button sdl_button_t;
+struct sdl_button {
+    char* text;
+    SDL_Rect rect;
+};
+
 #endif
