@@ -1,36 +1,52 @@
 #include "pong_ball.h"
 
-pong_ball_t *pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_paddle_t *paddle){
+pong_ball_t *pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_paddle_t *paddle, float ftime){
 
-    if(ball->rect.x >= 0) {
-        if ((unsigned)ball->rect.x >= (window->width - 20)) {
-            ball->velocityX = -1.0f;
-        } else if (ball->rect.x <= 0) {
-            ball->velocityX = 1.0f;
+
+    ball->x += (ball->velocityX * ftime);
+    ball->y += (ball->velocityY * ftime);
+    ball->rect.x = ball->x;
+    ball->rect.y = ball->y;
+
+        if (ball->x > (window->width - 20)) {
+            ball->velocityX *= -1.0f;
+            ball->x = window->width - ball->rect.w;
+            printf("X > \n");
+        } else if (ball->x < 0) {
+            ball->velocityX *= -1.0f;
+            ball->x = 0;
+            printf("X < \n");
         }
-    }
-    if(ball->rect.y >= 0) {
-        if ((unsigned)ball->rect.y >= (window->height - 20)) {
-            ball->velocityY = -1.0f;
-        } else if (ball->rect.y <= 0) {
-            ball->velocityY = 1.0f;
+        if (ball->y > (window->height - 20)) {
+            ball->velocityY *= -1.0f;
+            ball->y = window->height - ball->rect.h;
+            printf("Y > \n");
+        } else if (ball->y < 0) {
+            ball->velocityY *= -1.0f;
+            ball->y = 0;
+            printf("Y < \n");
         }
-    }
 
     if((paddle->rect.x >= ball->rect.x + ball->rect.w)
             || (paddle->rect.x + paddle->rect.w <= ball->rect.x)
             || (paddle->rect.y >= ball->rect.y + ball->rect.h)
             || (paddle->rect.y + paddle->rect.h <= ball->rect.y)){
-        //printf("pas de colision");
     }else{
+        //double distanceX = paddle->rect.y + paddle->rect.h / 2. - (ball->rect.y + 10);
         printf("collision\n");
-        ball->velocityX *= -1.0f;
+        //printf("%f\n", distanceX);
+        //ball->velocityX = -distanceX * 0.03;
+        //ball->velocityX = -distanceX * 0.03;
+        //if(ball->velocityX)
+
+        ball->velocityX *= -1.1f;
     }
-
-
-
-    ball->rect.x += ball->velocityX;
-    ball->rect.y += ball->velocityY;
+    printf("VelocityY : %f\n", ball->velocityY);
+    printf("%d\n", ball->rect.y);
+    printf("%d\n", ball->rect.x);
+    printf("Y : %f\n", ball->y);
+    printf("X : %f\n", ball->x);
+    //printf("%f\n", ball->velocityX);
 
     //printf("%d\n", ball->rect.x);
 
@@ -42,14 +58,17 @@ pong_ball_t *pong_ball_init(const size_t size, const color_t color) {
 
 	ret = malloc(sizeof(*ret));
 
-	ret->velocityX = 1.0f;
-	ret->velocityY = 1.0f;
+	ret->velocityX = 10.0f;
+	ret->velocityY = 10.0f;
 
 	ret->rect.h = size;
 	ret->rect.w = size;
 
-    ret->rect.x = 50;
+    ret->rect.x = 650;
     ret->rect.y = 20;
+
+    ret->x = 400;
+    ret->y = 100;
 
 	ret->color.r = color.r;
 	ret->color.g = color.g;

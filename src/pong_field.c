@@ -36,7 +36,7 @@ int pong_field_draw(pong_field_t *field, pong_window_t *window) {
 
     for(i = 0; i < field->nbCube; i++){
         field[i].rect.x = field->middle;
-        field[i].rect.y = (field->rect.h * i) * 2;
+        field[i].rect.y = 15 + (field->rect.h * i) * 2;
         SDL_SetRenderDrawColor(ren, color->r, color->g, color->b, SDL_ALPHA_OPAQUE);
         SDL_RenderFillRect(ren, &(field[i].rect));
         SDL_RenderDrawRect(ren, &(field[i].rect));
