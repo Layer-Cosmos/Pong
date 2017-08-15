@@ -2,6 +2,7 @@
 #define TYPES_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,9 +23,9 @@
 #define LOST_NETWORK_MSG "lost"
 #define WON_NETWORK_MSG "won"
 
-#define TICK_INTERVAL 20
-
 #define SDL_ERROR fprintf(stderr, "SDL Error: %s", SDL_GetError())
+
+#define TICK_INTERVAL 20;
 
 struct server;
 struct client;
@@ -35,102 +36,111 @@ struct pong_window;
 struct color;
 struct pong_client;
 struct pong_server;
-struct pong_opt_client;
-struct pong_opt_server;
 
 enum key {
-	DOWN_KEY,
-	UP_KEY
+    DOWN_KEY,
+    UP_KEY
 };
 
 enum info_type {
-	PADDLE,
-	BALL
+    PADDLE,
+    BALL
 };
 
 typedef int socket_t;
 
 typedef struct client client_t;
 struct client {
-	socket_t sock;
+    socket_t sock;
 };
 
 typedef struct server server_t;
 struct server {
-	socket_t sock;
-	socket_t sock_client;
+    socket_t sock;
+    socket_t sock_client;
 };
 
 typedef struct network_msg network_msg_t;
 struct network_msg {
-	char buffer[MSG_BUFFER_SIZE];
-	size_t length;
+    char buffer[MSG_BUFFER_SIZE];
+    size_t length;
 };
 
 typedef struct color color_t;
 struct color {
-	Uint8 r;
-	Uint8 g;
-	Uint8 b;
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
 };
 
 typedef struct pong_ball pong_ball_t;
 struct pong_ball {
-	size_t size;
-	size_t angle;
-	SDL_Rect rect;
-	color_t color;
-	float velocityX;
-	float velocityY;
-	float x;
-	float y;
+    size_t size;
+    size_t angle;
+    SDL_Rect rect;
+    color_t color;
+    float velocityX;
+    float velocityY;
+    float x;
+    float y;
+};
+
+typedef struct pong_window pong_window_t;
+struct pong_window {
+    SDL_Window* win;
+    SDL_Renderer* ren;
+    color_t bg_color;
+    size_t height;
+    size_t width;
 };
 
 typedef struct pong_paddle pong_paddle_t;
 struct pong_paddle {
+	pong_window_t* window;
 	size_t velocity;
 	color_t color;
 	SDL_Rect rect;
 };
 
-typedef struct pong_window pong_window_t;
-struct pong_window {
-	SDL_Window *win;
-	SDL_Renderer *ren;
-	color_t bg_color;
-	size_t height;
-	size_t width;
-};
-
 typedef struct pong_client pong_client_t;
 struct pong_client {
-	client_t *client;
-	pong_ball_t *ball;
-	pong_paddle_t *paddle;
-	pong_paddle_t *paddle_s;
+    client_t* client;
+    pong_ball_t* ball;
+    pong_paddle_t* paddle;
+    pong_paddle_t* paddle_s;
 };
 
 typedef struct pong_server pong_server_t;
 struct pong_server {
-	server_t *server;
-	pong_client_t *client;
-	pong_ball_t *ball;
-	pong_paddle_t *paddle;
+    server_t* server;
+    pong_client_t* client;
+    pong_ball_t* ball;
+    pong_paddle_t* paddle;
 };
 
 typedef struct pong_field pong_field_t;
 struct pong_field {
-	color_t color;
-	SDL_Rect rect;
-	int nbCube;
-	int middle;
+    color_t color;
+    SDL_Rect rect;
+    int nbCube;
+    int middle;
 };
 
 typedef struct sdl_button sdl_button_t;
 struct sdl_button {
-	char *text;
-	SDL_Rect rect;
+    char* text;
+    SDL_Rect rect;
 };
+
+typedef struct pong_score pong_score_t;
+struct pong_score {
+    color_t color;
+    TTF_Font* text;
+    SDL_Rect rect;
+    int player1;
+    int player2;
+};
+
 
 typedef struct pong_opt_client pong_opt_client_t;
 struct pong_opt_client {
