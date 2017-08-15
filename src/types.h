@@ -33,6 +33,8 @@ struct pong_window;
 struct color;
 struct pong_client;
 struct pong_server;
+struct pong_opt_client;
+struct pong_opt_server;
 
 enum key {
 	DOWN_KEY,
@@ -136,6 +138,11 @@ struct pong_opt_client {
 typedef struct pong_opt_server pong_opt_server_t;
 struct pong_opt_server {
 	int port;
+};
+
+enum pong_type {
+	server,
+	client
 };
 
 #endif
