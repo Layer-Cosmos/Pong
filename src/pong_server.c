@@ -85,7 +85,7 @@ void pong_server_init(pong_server_t *pg_server, const int port, const size_t nb_
 	pg_server->server = server_init(port, nb_conn);
 	pg_server->ball = NULL;
 	pg_server->paddle = NULL;
-	pg_server->client = NULL;
+	pg_server->client = malloc(sizeof(*(pg_server->client)));
 }
 
 void pong_server_wait_conn(pong_server_t *pg_server) {
