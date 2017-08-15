@@ -1,20 +1,23 @@
 #include "pong_paddle.h"
 
-pong_paddle_t *pong_paddle_init(size_t x, size_t y, const color_t color, unsigned int player) {
+pong_paddle_t *pong_paddle_init(pong_window_t *window, const color_t color, unsigned int player) {
 	pong_paddle_t *ret;
 
 	ret = malloc(sizeof(*ret));
 
+	ret->window = window;
+
 	ret->rect.h = 80;
 	ret->rect.w = 20;
+    ret->velocity = 1;
 
     if(player == 1){
         ret->rect.x = 20;
-        ret->rect.y = (y - ret->rect.h) / 2;
+        ret->rect.y = (window->height - ret->rect.h) / 2;
     }
     else{
-        ret->rect.x = x - 40;
-        ret->rect.y = (y - ret->rect.h) / 2;
+        ret->rect.x = window->width - 40;
+        ret->rect.y = (window->height - ret->rect.h) / 2;
     }
 
 
@@ -40,9 +43,20 @@ int pong_paddle_draw(pong_paddle_t *paddle, pong_window_t *window) {
 }
 
 void pong_paddle_go_up(pong_paddle_t *paddle) {
-	paddle->rect.y--;
+	if(paddle->rect.y > 0){
+		paddle->rect.y -= paddle->velocity;
+	}
+	else{
+		paddle->rect.y = 0;
+	}
+
 }
 
 void pong_paddle_go_down(pong_paddle_t *paddle) {
-	paddle->rect.y++;
+	if((unsigned)paddle->rect.y < paddle->window->height - paddle->rect.h) {
+		paddle->rect.y += paddle->velocity;
+	}
+	else{
+		paddle->rect.y = paddle->window->height - paddle->rect.h;
+	}
 }
