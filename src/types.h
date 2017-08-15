@@ -22,6 +22,8 @@
 #define LOST_NETWORK_MSG "lost"
 #define WON_NETWORK_MSG "won"
 
+#define TICK_INTERVAL 20
+
 #define SDL_ERROR fprintf(stderr, "SDL Error: %s", SDL_GetError())
 
 struct server;
@@ -74,13 +76,14 @@ struct color {
 
 typedef struct pong_ball pong_ball_t;
 struct pong_ball {
-	size_t velocity;
 	size_t size;
 	size_t angle;
 	SDL_Rect rect;
 	color_t color;
 	float velocityX;
 	float velocityY;
+	float x;
+	float y;
 };
 
 typedef struct pong_paddle pong_paddle_t;
