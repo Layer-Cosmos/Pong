@@ -64,21 +64,28 @@ static void *pong_event_svr_thread(void *arg) {
 
 		if (event.type == SDL_QUIT) {
 			run = false;
-		} else if (event.type == SDL_KEYDOWN) {
-			pong_paddle_go_down(arg_passed->paddle);
-			moved = true;
-		} else if (event.type == SDL_KEYUP) {
-			pong_paddle_go_up(arg_passed->paddle);
-			moved = true;
-		} else {
-			moved = false;
 		}
+        if (event.key.state == SDL_PRESSED) {
+            if (event.key.keysym.sym == SDLK_DOWN) {
+                pong_paddle_go_down(arg_passed->paddle);
+                //moved = true;
+                //printf("BAS");
+            } else if (event.key.keysym.sym == SDLK_UP) {
+                pong_paddle_go_up(arg_passed->paddle);
+                //printf("%d \n", arg_passed->paddle->rect.x);
+
+                //moved = true;
+                //printf("HAUT");
+            } else {
+                moved = false;
+            }
+        }
 
 		if (moved) {
 			pong_server_send_spaddle(arg_passed);
 		}
-
-		usleep(5);
+        //printf("HELLO");
+		usleep(1000);
 	}
 
 	return NULL;
