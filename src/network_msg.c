@@ -22,13 +22,15 @@ static bool is_last_msg(const char *str) {
 static void save_char_to_str(const char c, char **str) {
 	size_t str_length;
 
-	if (*str == NULL) {
-		*str = malloc(1);
-		memmove(*str, &c, 1);
+	if (str[0] == NULL) {
+		str[0] = malloc(2);
+		memmove(str[0], &c, 1);
+		str[0][1] = '\0';
 	} else {
-		str_length = strlen(*str);
-		*str = realloc(*str, str_length + 2);
-		memmove(*str + str_length, &c, 1);
+		str_length = strlen(str[0]);
+		str[0] = realloc(str[0], str_length + 2);
+		memmove(str[0] + str_length, &c, 1);
+		str[0][str_length + 1] = '\0';
 	}
 }
 

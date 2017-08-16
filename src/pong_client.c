@@ -39,7 +39,7 @@ static char *key_msg(const enum key key_pressed) {
 static bool is_number(const char c) {
 	bool ret;
 
-	ret = (c < 58 && c > 47) ? true : false;
+	ret = (c <= '9' && c >= '0') ? true : false;
 
 	return ret;
 }
