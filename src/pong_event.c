@@ -6,6 +6,26 @@ static pthread_t thread_id_msg_server = 0;
 static pthread_t thread_id_event_clt = 0;
 static pthread_t thread_id_event_server = 0;
 
+static void mng_keybrd_evt_svr(SDL_Event *event, pong_paddle_t *paddle) {
+	SDL_Keycode key_code;
+
+	key_code = event->key.keysym.sym;
+	if (key_code == SDLK_UP)
+		pong_paddle_go_up(paddle);
+	else if (key_code == SDLK_DOWN)
+		pong_paddle_go_down(paddle);
+}
+
+static void mng_keybrd_evt_clt(SDL_Event *event, pong_client_t *client) {
+	SDL_Keycode key_code;
+
+	key_code = event->key.keysym.sym;
+	if (key_code == SDLK_UP)
+		pong_client_send_key(client, UP_KEY);
+	else if (key_code == SDLK_DOWN)
+		pong_client_send_key(client, DOWN_KEY);
+}
+
 static void *pong_svr_msg_thread(void *arg) {
 	pong_server_t *arg_passed;
 
@@ -41,9 +61,7 @@ static void *pong_event_clt_thread(void *arg) {
 		if (event.type == SDL_QUIT) {
 			run = false;
 		} else if (event.type == SDL_KEYDOWN) {
-			pong_client_send_key(arg_passed, UP_KEY);
-		} else if (event.type == SDL_KEYUP) {
-			pong_client_send_key(arg_passed, DOWN_KEY);
+			mng_keybrd_evt_clt(&event, arg_passed);
 		}
 
 		usleep(5);
@@ -64,28 +82,18 @@ static void *pong_event_svr_thread(void *arg) {
 
 		if (event.type == SDL_QUIT) {
 			run = false;
+		} else if (event.type == SDL_KEYDOWN) {
+			mng_keybrd_evt_svr(&event, arg_passed->paddle);
+			moved = true;
+		} else {
+			moved = false;
 		}
-        if (event.key.state == SDL_PRESSED) {
-            if (event.key.keysym.sym == SDLK_DOWN) {
-                pong_paddle_go_down(arg_passed->paddle);
-                //moved = true;
-                //printf("BAS");
-            } else if (event.key.keysym.sym == SDLK_UP) {
-                pong_paddle_go_up(arg_passed->paddle);
-                //printf("%d \n", arg_passed->paddle->rect.x);
-
-                //moved = true;
-                //printf("HAUT");
-            } else {
-                moved = false;
-            }
-        }
 
 		if (moved) {
 			pong_server_send_spaddle(arg_passed);
 		}
-        //printf("HELLO");
-		usleep(1000);
+
+		usleep(5);
 	}
 
 	return NULL;
