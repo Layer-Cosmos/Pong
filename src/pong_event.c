@@ -56,15 +56,16 @@ static void *pong_event_clt_thread(void *arg) {
 
 	arg_passed = (pong_client_t *)arg;
 	while (run) {
-		SDL_PollEvent(&event);
+		while (SDL_PollEvent(&event)) {
 
-		if (event.type == SDL_QUIT) {
-			run = false;
-		} else if (event.type == SDL_KEYDOWN) {
-			mng_keybrd_evt_clt(&event, arg_passed);
+			if (event.type == SDL_QUIT) {
+				run = false;
+			} else if (event.type == SDL_KEYDOWN) {
+				mng_keybrd_evt_clt(&event, arg_passed);
+			}
+
+			usleep(5);
 		}
-
-		usleep(5);
 	}
 
 	return NULL;
@@ -78,19 +79,19 @@ static void *pong_event_svr_thread(void *arg) {
 	arg_passed = (pong_server_t *)arg;
 	moved = false;
 	while (run) {
-		SDL_PollEvent(&event);
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT) {
+				run = false;
+			} else if (event.type == SDL_KEYDOWN) {
+				mng_keybrd_evt_svr(&event, arg_passed->paddle);
+				moved = true;
+			} else {
+				moved = false;
+			}
 
-		if (event.type == SDL_QUIT) {
-			run = false;
-		} else if (event.type == SDL_KEYDOWN) {
-			mng_keybrd_evt_svr(&event, arg_passed->paddle);
-			moved = true;
-		} else {
-			moved = false;
-		}
-
-		if (moved) {
-			pong_server_send_spaddle(arg_passed);
+			if (moved) {
+				pong_server_send_spaddle(arg_passed);
+			}
 		}
 
 		usleep(5);
