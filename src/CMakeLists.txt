@@ -5,6 +5,7 @@ add_executable(${PROJECT_NAME}
 	pong_window.c
 	server.c
 	pong_init.c
+	pong_refresh.c
 	pong_ball.c
 	pong_paddle.c
 	pong_opt.c
@@ -13,6 +14,7 @@ add_executable(${PROJECT_NAME}
 	pong_msg.c
 	color.c
 	pong_server.c
+	pong_field.c
 	pong_client.c
 	pong_event.c
 	)

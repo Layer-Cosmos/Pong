@@ -1,10 +1,35 @@
 #include "pong_event.h"
 
-static bool run = false;
+static bool *run_ptr;
 static pthread_t thread_id_msg_clt = 0;
 static pthread_t thread_id_msg_server = 0;
 static pthread_t thread_id_event_clt = 0;
 static pthread_t thread_id_event_server = 0;
+static pong_server_t *server_ptr;
+static pong_client_t *client_ptr;
+
+static void kill_network() {
+	if (client_ptr == NULL) {
+		pong_server_shutdown(server_ptr);
+	} else {
+		pong_client_disconnect(client_ptr);
+	}
+}
+
+static void kill_threads() {
+	if (client_ptr == NULL) {
+		pthread_kill(thread_id_msg_server, SIGSTOP);
+		pthread_kill(thread_id_event_server, SIGSTOP);
+	} else {
+		pthread_kill(thread_id_msg_clt, SIGSTOP);
+		pthread_kill(thread_id_event_clt, SIGSTOP);
+	}
+}
+
+static void kill_all() {
+	kill_threads();
+	kill_network();
+}
 
 static void mng_keybrd_evt_svr(SDL_Event *event, pong_paddle_t *paddle) {
 	SDL_Keycode key_code;
@@ -30,7 +55,7 @@ static void *pong_svr_msg_thread(void *arg) {
 	pong_server_t *arg_passed;
 
 	arg_passed = (pong_server_t *)arg;
-	while (run) {
+	while (*run_ptr) {
 		pong_server_next_msg(arg_passed);
 		usleep(5);
 	}
@@ -42,7 +67,7 @@ static void *pong_clt_msg_thread(void *arg) {
 	pong_client_t *arg_passed;
 
 	arg_passed = (pong_client_t *)arg;
-	while (run) {
+	while (*run_ptr) {
 		pong_client_next_msg(arg_passed);
 		usleep(5);
 	}
@@ -55,11 +80,12 @@ static void *pong_event_clt_thread(void *arg) {
 	SDL_Event event;
 
 	arg_passed = (pong_client_t *)arg;
-	while (run) {
+	while (*run_ptr) {
 		while (SDL_PollEvent(&event)) {
 
 			if (event.type == SDL_QUIT) {
-				run = false;
+				*run_ptr = false;
+				kill_all();
 			} else if (event.type == SDL_KEYDOWN) {
 				mng_keybrd_evt_clt(&event, arg_passed);
 			}
@@ -78,10 +104,11 @@ static void *pong_event_svr_thread(void *arg) {
 
 	arg_passed = (pong_server_t *)arg;
 	moved = false;
-	while (run) {
+	while (*run_ptr) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
-				run = false;
+				*run_ptr = false;
+				kill_all();
 			} else if (event.type == SDL_KEYDOWN) {
 				mng_keybrd_evt_svr(&event, arg_passed->paddle);
 				moved = true;
@@ -100,25 +127,22 @@ static void *pong_event_svr_thread(void *arg) {
 	return NULL;
 }
 
-void pong_event_clt_mng(pong_client_t *client) {
-	run = true;
+void pong_event_clt_mng(pong_client_t *client, bool *run) {
+	run_ptr = run;
+
+	server_ptr = NULL;
+	client_ptr = client;
 
 	pthread_create(&thread_id_event_clt, NULL, pong_event_clt_thread, (void *)client);
 	pthread_create(&thread_id_msg_clt, NULL, pong_clt_msg_thread, (void *)client);
 }
 
-void pong_event_svr_mng(pong_server_t *server) {
-	run = true;
+void pong_event_svr_mng(pong_server_t *server, bool *run) {
+	run_ptr = run;
+
+	server_ptr = server;
+	client_ptr = NULL;
 
 	pthread_create(&thread_id_event_server, NULL, pong_event_svr_thread, (void *)server);
 	pthread_create(&thread_id_msg_server, NULL, pong_svr_msg_thread, (void *)server);
-}
-
-void pong_event_mng_kill() {
-	run = false;
-
-	pthread_kill(thread_id_msg_server, SIGSTOP);
-	pthread_kill(thread_id_msg_clt, SIGSTOP);
-	pthread_kill(thread_id_event_clt, SIGSTOP);
-	pthread_kill(thread_id_event_server, SIGSTOP);
 }

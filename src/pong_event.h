@@ -11,8 +11,7 @@
 #include <pthread.h>
 #include <signal.h>
 
-void pong_event_clt_mng(pong_client_t *);
-void pong_event_svr_mng(pong_server_t *);
-void pong_event_mng_kill();
+void pong_event_clt_mng(pong_client_t *, bool *);
+void pong_event_svr_mng(pong_server_t *, bool *);
 
 #endif
