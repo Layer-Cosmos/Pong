@@ -9,6 +9,7 @@
 #include "pong_init.h"
 #include "pong_opt.h"
 #include "pong_paddle.h"
+#include "pong_refresh.h"
 #include "pong_server.h"
 #include "pong_window.h"
 

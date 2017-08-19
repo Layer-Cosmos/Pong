@@ -22,6 +22,7 @@
 #define KEY_UP_NETWORK_MSG "up"
 #define LOST_NETWORK_MSG "lost"
 #define WON_NETWORK_MSG "won"
+#define NETWORK_TRANSMISSION_END "END_TRANSMISSION"
 
 #define SDL_ERROR fprintf(stderr, "SDL Error: %s", SDL_GetError())
 

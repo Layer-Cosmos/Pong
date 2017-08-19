@@ -13,6 +13,7 @@ bool pong_msg_is_cpaddle(const char *);
 bool pong_msg_is_ball(const char *);
 bool pong_msg_is_lost(const char *);
 bool pong_msg_is_won(const char *);
+bool pong_msg_is_end(const char *);
 char *pong_msg_key_up();
 char *pong_msg_key_down();
 

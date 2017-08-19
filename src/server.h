@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include "network_msg.h"
+#include "pong_event.h"
 #include "types.h"
 #include <signal.h>
 

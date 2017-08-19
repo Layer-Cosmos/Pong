@@ -97,6 +97,13 @@ bool pong_msg_is_won(const char *msg) {
 	return ret;
 }
 
+bool pong_msg_is_end(const char *msg) {
+	bool ret;
+
+	ret = network_msg_starts_with(msg, NETWORK_TRANSMISSION_END);
+	return ret;
+}
+
 char *pong_msg_key_up() {
 	char *ret;
 

@@ -70,8 +70,9 @@ char *network_msg_next(const socket_t sock) {
 	ret = NULL;
 	do {
 		c = read_cur_char(sock);
-		save_char_to_str(c, &ret);
-	} while (!is_last_msg(ret));
+		if (c != -1)
+			save_char_to_str(c, &ret);
+	} while (c > -1 && !is_last_msg(ret));
 
 	return ret;
 }

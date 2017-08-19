@@ -7,6 +7,8 @@ client_t *client_init() {
 	if (ret == NULL)
 		return NULL;
 
+	ret->sock = -1;
+
 	return ret;
 }
 

@@ -1,5 +1,9 @@
 #include "pong_client.h"
 
+static void client_send_end(const client_t *client) {
+	client_send_msg(client, NETWORK_TRANSMISSION_END);
+}
+
 static char *key_down_msg() {
 	char *ret;
 	size_t size_to_alloc;
@@ -78,6 +82,7 @@ void pong_client_connect(pong_client_t *pg_clt, const char *ip, const int port) 
 }
 
 void pong_client_disconnect(pong_client_t *pg_clt) {
+	client_send_end(pg_clt->client);
 	client_disconnect(pg_clt->client);
 }
 
@@ -90,17 +95,21 @@ void pong_client_send_key(const pong_client_t *client, const enum key key_presse
 	free(msg_to_send);
 }
 
-void pong_client_next_msg(pong_client_t *pg_clt) {
+int pong_client_next_msg(pong_client_t *pg_clt) {
 	char *raw_msg;
 
 	raw_msg = network_msg_next(pg_clt->client->sock);
+	if (raw_msg == NULL || pong_msg_is_end(raw_msg))
+		return -1;
+
 	if (pong_msg_is_spaddle(raw_msg)) {
 		coord_from_str(raw_msg + strlen(SPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle_s->rect));
 	} else if (pong_msg_is_cpaddle(raw_msg)) {
-		coord_from_str(raw_msg + strlen(CPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle_s->rect));
+		coord_from_str(raw_msg + strlen(CPADDLE_NETWORK_MSG_PREFIX), &(pg_clt->paddle->rect));
 	} else if (pong_msg_is_ball(raw_msg)) {
 		coord_from_str(raw_msg + strlen(BALL_NETWORK_MSG_PREFIX), &(pg_clt->ball->rect));
 	}
 
 	free(raw_msg);
+	return 0;
 }

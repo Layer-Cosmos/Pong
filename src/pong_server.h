@@ -16,6 +16,6 @@ void pong_server_send_lost(const pong_server_t *);
 void pong_server_send_won(const pong_server_t *);
 void pong_server_wait_conn(pong_server_t *);
 void pong_server_shutdown(pong_server_t *);
-void pong_server_next_msg(pong_server_t *);
+int pong_server_next_msg(pong_server_t *);
 
 #endif

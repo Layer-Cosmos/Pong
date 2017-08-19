@@ -1,12 +1,34 @@
 #include "pong_event.h"
 
-static bool *run_ptr;
+static bool *run_ptr = NULL;
+static bool run_sdl;
 static pthread_t thread_id_msg_clt = 0;
 static pthread_t thread_id_msg_server = 0;
 static pthread_t thread_id_event_clt = 0;
 static pthread_t thread_id_event_server = 0;
-static pong_server_t *server_ptr;
-static pong_client_t *client_ptr;
+static pthread_t thread_id_event_sdl = 0;
+static pong_server_t *server_ptr = NULL;
+static pong_client_t *client_ptr = NULL;
+
+static bool check_network();
+static void kill_network();
+static void kill_threads();
+static void kill_all();
+static void mng_keybrd_evt_svr(SDL_Event *, pong_paddle_t *);
+static void *pong_svr_msg_thread(void *);
+static void *pong_clt_msg_thread(void *);
+static void *pong_sdl_thread(void *);
+
+static bool check_network() {
+	bool ret;
+
+	if (server_ptr == NULL && client_ptr == NULL)
+		ret = false;
+	else
+		ret = true;
+
+	return ret;
+}
 
 static void kill_network() {
 	if (client_ptr == NULL) {
@@ -17,6 +39,9 @@ static void kill_network() {
 }
 
 static void kill_threads() {
+	if (run_ptr == NULL)
+		return;
+
 	if (client_ptr == NULL) {
 		pthread_kill(thread_id_msg_server, SIGSTOP);
 		pthread_kill(thread_id_event_server, SIGSTOP);
@@ -27,8 +52,12 @@ static void kill_threads() {
 }
 
 static void kill_all() {
-	kill_threads();
-	kill_network();
+	if (check_network()) {
+		kill_threads();
+		kill_network();
+	}
+
+	pthread_kill(thread_id_event_sdl, SIGSTOP);
 }
 
 static void mng_keybrd_evt_svr(SDL_Event *event, pong_paddle_t *paddle) {
@@ -56,7 +85,9 @@ static void *pong_svr_msg_thread(void *arg) {
 
 	arg_passed = (pong_server_t *)arg;
 	while (*run_ptr) {
-		pong_server_next_msg(arg_passed);
+		if (pong_server_next_msg(arg_passed) == -1) {
+			kill_all();
+		}
 		usleep(5);
 	}
 
@@ -68,7 +99,9 @@ static void *pong_clt_msg_thread(void *arg) {
 
 	arg_passed = (pong_client_t *)arg;
 	while (*run_ptr) {
-		pong_client_next_msg(arg_passed);
+		if (pong_client_next_msg(arg_passed) == -1) {
+			kill_all();
+		}
 		usleep(5);
 	}
 
@@ -82,11 +115,7 @@ static void *pong_event_clt_thread(void *arg) {
 	arg_passed = (pong_client_t *)arg;
 	while (*run_ptr) {
 		while (SDL_PollEvent(&event)) {
-
-			if (event.type == SDL_QUIT) {
-				*run_ptr = false;
-				kill_all();
-			} else if (event.type == SDL_KEYDOWN) {
+			if (event.type == SDL_KEYDOWN) {
 				mng_keybrd_evt_clt(&event, arg_passed);
 			}
 
@@ -104,12 +133,10 @@ static void *pong_event_svr_thread(void *arg) {
 
 	arg_passed = (pong_server_t *)arg;
 	moved = false;
+
 	while (*run_ptr) {
 		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				*run_ptr = false;
-				kill_all();
-			} else if (event.type == SDL_KEYDOWN) {
+			if (event.type == SDL_KEYDOWN) {
 				mng_keybrd_evt_svr(&event, arg_passed->paddle);
 				moved = true;
 			} else {
@@ -127,8 +154,26 @@ static void *pong_event_svr_thread(void *arg) {
 	return NULL;
 }
 
+static void *pong_sdl_thread(void *arg) {
+	SDL_Event event;
+
+	(void)arg;
+	while (run_sdl) {
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT) {
+				run_sdl = false;
+				SDL_Quit();
+				kill_all();
+			}
+		}
+	}
+
+	return NULL;
+}
+
 void pong_event_clt_mng(pong_client_t *client, bool *run) {
 	run_ptr = run;
+	*run_ptr = true;
 
 	server_ptr = NULL;
 	client_ptr = client;
@@ -139,10 +184,23 @@ void pong_event_clt_mng(pong_client_t *client, bool *run) {
 
 void pong_event_svr_mng(pong_server_t *server, bool *run) {
 	run_ptr = run;
+	*run_ptr = true;
 
 	server_ptr = server;
 	client_ptr = NULL;
 
 	pthread_create(&thread_id_event_server, NULL, pong_event_svr_thread, (void *)server);
 	pthread_create(&thread_id_msg_server, NULL, pong_svr_msg_thread, (void *)server);
+}
+
+void pong_event_kill_all() {
+	*run_ptr = false;
+
+	kill_all();
+}
+
+void pong_event_sdl() {
+	run_sdl = true;
+
+	pthread_create(&thread_id_event_sdl, NULL, pong_sdl_thread, NULL);
 }
