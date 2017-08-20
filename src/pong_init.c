@@ -8,8 +8,7 @@ static pong_server_t *init_server(const pong_opt_server_t *opt) {
 	pong_server_t *ret;
 
 	ret = malloc(sizeof(*ret));
-	pong_server_init(ret, opt->port, 2);
-	pong_server_wait_conn(ret);
+	pong_server_init(ret, opt->port);
 
 	return ret;
 }
@@ -18,8 +17,7 @@ static pong_client_t *init_client(const pong_opt_client_t *opt) {
 	pong_client_t *ret;
 
 	ret = malloc(sizeof(*ret));
-	pong_client_init(ret);
-	pong_client_connect(ret, opt->ip, opt->port);
+	pong_client_init(ret, opt->ip, opt->port);
 
 	return ret;
 }
