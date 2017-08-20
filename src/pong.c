@@ -8,6 +8,7 @@ int main(int argc, char *argv[]) {
 	pong_server_t *pg_server;
 	pong_field_t *field;
 	pong_ball_t *ball_ptr;
+	pong_score_t *score;
 	void *opt;
 	enum pong_type type;
 	pong_window_t *window;
@@ -25,17 +26,24 @@ int main(int argc, char *argv[]) {
 	opt = pong_init_type(argc, argv, &type);
 	if (type == server) {
 		pg_server = pong_init_network(opt, type);
-		pong_event_svr_mng(pg_server, &run);
+		pong_event_init(type, pg_server, &run);
+		pong_server_wait_conn(pg_server, 2);
+		pong_event_start();
 		pong_init_paddle_svr(pg_server, window);
 		pong_init_ball_svr(pg_server);
 		ball_ptr = pg_server->ball;
 	} else {
 		pg_client = pong_init_network(opt, type);
-		pong_event_clt_mng(pg_client, &run);
+		pong_event_init(type, pg_client, &run);
+		pong_client_connect(pg_client);
+		pong_event_start();
 		pong_init_paddle_clt(pg_client, window);
 		pong_init_ball_clt(pg_client);
 		ball_ptr = pg_client->ball;
 	}
+
+	score = pong_score_init(color_white(), window);
+	ball_ptr->score = score;
 
 	startTime = SDL_GetTicks();
 	while (run) {
@@ -57,6 +65,9 @@ int main(int argc, char *argv[]) {
 			pong_refresh_screen_clt(pg_client, window);
 
 		pong_ball_draw(ball_ptr, window);
+		pong_score_draw(score, window);
 		usleep(10);
 	}
+
+	return 0;
 }
