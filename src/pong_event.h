@@ -11,8 +11,8 @@
 #include <pthread.h>
 #include <signal.h>
 
-void pong_event_clt_mng(pong_client_t *, bool *);
-void pong_event_svr_mng(pong_server_t *, bool *);
+void pong_event_init(enum pong_type, void *, bool *);
+void pong_event_start();
 void pong_event_kill_all();
 void pong_event_sdl();
 

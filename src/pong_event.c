@@ -2,6 +2,7 @@
 
 static bool *run_ptr = NULL;
 static bool run_sdl;
+static bool threads_running = false;
 static pthread_t thread_id_msg_clt = 0;
 static pthread_t thread_id_msg_server = 0;
 static pthread_t thread_id_event_clt = 0;
@@ -18,6 +19,9 @@ static void mng_keybrd_evt_svr(SDL_Event *, pong_paddle_t *);
 static void *pong_svr_msg_thread(void *);
 static void *pong_clt_msg_thread(void *);
 static void *pong_sdl_thread(void *);
+static void *pong_event_clt_thread(void *);
+static void pong_event_svr_mng();
+static void pong_event_clt_mng();
 
 static bool check_network() {
 	bool ret;
@@ -28,6 +32,10 @@ static bool check_network() {
 		ret = true;
 
 	return ret;
+}
+
+static bool check_threads() {
+	return threads_running;
 }
 
 static void kill_network() {
@@ -43,21 +51,31 @@ static void kill_threads() {
 		return;
 
 	if (client_ptr == NULL) {
-		pthread_kill(thread_id_msg_server, SIGSTOP);
-		pthread_kill(thread_id_event_server, SIGSTOP);
+		pthread_cancel(thread_id_msg_server);
+		pthread_join(thread_id_msg_server, NULL);
+		pthread_cancel(thread_id_event_server);
+		pthread_join(thread_id_event_server, NULL);
 	} else {
-		pthread_kill(thread_id_msg_clt, SIGSTOP);
-		pthread_kill(thread_id_event_clt, SIGSTOP);
+		pthread_cancel(thread_id_msg_clt);
+		pthread_join(thread_id_msg_clt, NULL);
+		pthread_cancel(thread_id_event_clt);
+		pthread_join(thread_id_event_clt, NULL);
 	}
 }
 
 static void kill_all() {
 	if (check_network()) {
-		kill_threads();
 		kill_network();
 	}
 
-	pthread_kill(thread_id_event_sdl, SIGSTOP);
+	if (check_threads()) {
+		kill_threads();
+	}
+
+	run_sdl = false;
+	pthread_cancel(thread_id_event_sdl);
+	pthread_detach(thread_id_event_sdl);
+	pthread_join(thread_id_event_sdl, NULL);
 }
 
 static void mng_keybrd_evt_svr(SDL_Event *event, pong_paddle_t *paddle) {
@@ -166,31 +184,21 @@ static void *pong_sdl_thread(void *arg) {
 				kill_all();
 			}
 		}
+
+		usleep(5);
 	}
 
 	return NULL;
 }
 
-void pong_event_clt_mng(pong_client_t *client, bool *run) {
-	run_ptr = run;
-	*run_ptr = true;
-
-	server_ptr = NULL;
-	client_ptr = client;
-
-	pthread_create(&thread_id_event_clt, NULL, pong_event_clt_thread, (void *)client);
-	pthread_create(&thread_id_msg_clt, NULL, pong_clt_msg_thread, (void *)client);
+static void pong_event_clt_mng() {
+	pthread_create(&thread_id_event_clt, NULL, pong_event_clt_thread, (void *)client_ptr);
+	pthread_create(&thread_id_msg_clt, NULL, pong_clt_msg_thread, (void *)client_ptr);
 }
 
-void pong_event_svr_mng(pong_server_t *server, bool *run) {
-	run_ptr = run;
-	*run_ptr = true;
-
-	server_ptr = server;
-	client_ptr = NULL;
-
-	pthread_create(&thread_id_event_server, NULL, pong_event_svr_thread, (void *)server);
-	pthread_create(&thread_id_msg_server, NULL, pong_svr_msg_thread, (void *)server);
+static void pong_event_svr_mng() {
+	pthread_create(&thread_id_event_server, NULL, pong_event_svr_thread, (void *)server_ptr);
+	pthread_create(&thread_id_msg_server, NULL, pong_svr_msg_thread, (void *)server_ptr);
 }
 
 void pong_event_kill_all() {
@@ -203,4 +211,23 @@ void pong_event_sdl() {
 	run_sdl = true;
 
 	pthread_create(&thread_id_event_sdl, NULL, pong_sdl_thread, NULL);
+}
+
+void pong_event_init(enum pong_type type, void *arg, bool *run) {
+	run_ptr = run;
+
+	if (type == server)
+		server_ptr = (pong_server_t *)arg;
+	else
+		client_ptr = (pong_client_t *)arg;
+}
+
+void pong_event_start() {
+	*run_ptr = true;
+	threads_running = true;
+
+	if (server_ptr == NULL)
+		pong_event_clt_mng();
+	else
+		pong_event_svr_mng();
 }

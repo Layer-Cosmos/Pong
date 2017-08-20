@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
 	pong_field.c
 	pong_client.c
 	pong_event.c
+	pong_score.c
 	)
 
 

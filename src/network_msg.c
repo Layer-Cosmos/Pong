@@ -80,6 +80,9 @@ char *network_msg_next(const socket_t sock) {
 int network_msg_send(const socket_t sock, const char *msg) {
 	int ret;
 
+	if (sock == -1)
+		return 0;
+
 	ret = write(sock, msg, strlen(msg));
 	if (ret == -1)
 		perror("Can't write to socket");

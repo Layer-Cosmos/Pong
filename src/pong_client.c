@@ -71,14 +71,14 @@ static void coord_from_str(const char *coord_str, SDL_Rect *rect) {
 	str_to_int(coord_str + idx + 1, &(rect->y));
 }
 
-void pong_client_init(pong_client_t *pg_clt) {
-	pg_clt->client = client_init();
+void pong_client_init(pong_client_t *pg_clt, const char *ip, const int port) {
+	pg_clt->client = client_init(ip, port);
 	pg_clt->ball = NULL;
 	pg_clt->paddle = NULL;
 }
 
-void pong_client_connect(pong_client_t *pg_clt, const char *ip, const int port) {
-	client_connect(pg_clt->client, ip, port);
+void pong_client_connect(pong_client_t *pg_clt) {
+	client_connect(pg_clt->client);
 }
 
 void pong_client_disconnect(pong_client_t *pg_clt) {
