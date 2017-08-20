@@ -3,8 +3,6 @@
 static bool get_type(int, char **, enum pong_type *);
 static pong_server_t *init_server(const pong_opt_server_t *);
 static pong_client_t *init_client(const pong_opt_client_t *);
-//static void init_paddle_clt(pong_client_t *);
-//static void init_paddle_svr(pong_server_t *);
 
 static pong_server_t *init_server(const pong_opt_server_t *opt) {
 	pong_server_t *ret;
@@ -88,7 +86,7 @@ void pong_init_paddle_clt(pong_client_t *client, pong_window_t *window) {
 
 void pong_init_paddle_svr(pong_server_t *server, pong_window_t *window) {
 	server->paddle = pong_paddle_init(window, color_white(), 1);
-	server->client->paddle = pong_paddle_init(window, color_white(), 2);
+	server->paddle_c = pong_paddle_init(window, color_white(), 2);
 }
 
 void pong_init_ball_clt(pong_client_t *client) {
