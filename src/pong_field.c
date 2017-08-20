@@ -10,6 +10,7 @@ pong_field_t *pong_field_init(pong_window_t *window, const color_t color) {
     nbCube = window->height / 40;
 
 
+
     ret = malloc(sizeof(*ret) * nbCube);
     ret->nbCube = (window->height / 40);
     ret->middle = (window->width / 2) - 20;

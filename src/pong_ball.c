@@ -1,6 +1,9 @@
 #include "pong_ball.h"
+#include "pong_score.h"
+//#include "pong_server.h"
 
-pong_ball_t *pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_paddle_t *paddle, float ftime){
+void pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_paddle_t *paddle, float ftime){
+
 
 
     ball->x += (ball->velocityX * ftime);
@@ -9,22 +12,27 @@ pong_ball_t *pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_pad
     ball->rect.y = ball->y;
 
         if (ball->x > (window->width - 20)) {
+            pong_score_add(ball->score, 1);
             ball->velocityX *= -1.0f;
-            ball->x = window->width - ball->rect.w;
-            printf("X > \n");
+            ball->x = window->width / 2;
+            ball->y = window->height / 2;
+            //printf("X > \n");
         } else if (ball->x < 0) {
+            pong_score_add(ball->score, 2);
             ball->velocityX *= -1.0f;
-            ball->x = 0;
-            printf("X < \n");
+            ball->x = window->width / 2;
+            ball->y = window->height / 2;
+
+            //printf("X < \n");
         }
         if (ball->y > (window->height - 20)) {
             ball->velocityY *= -1.0f;
             ball->y = window->height - ball->rect.h;
-            printf("Y > \n");
+            //printf("Y > \n");
         } else if (ball->y < 0) {
             ball->velocityY *= -1.0f;
             ball->y = 0;
-            printf("Y < \n");
+            //printf("Y < \n");
         }
 
     if((paddle->rect.x >= ball->rect.x + ball->rect.w)
@@ -33,24 +41,26 @@ pong_ball_t *pong_ball_update(pong_ball_t *ball, pong_window_t *window, pong_pad
             || (paddle->rect.y + paddle->rect.h <= ball->rect.y)){
     }else{
         //double distanceX = paddle->rect.y + paddle->rect.h / 2. - (ball->rect.y + 10);
-        printf("collision\n");
+        //printf("collision\n");
         //printf("%f\n", distanceX);
         //ball->velocityX = -distanceX * 0.03;
         //ball->velocityX = -distanceX * 0.03;
         //if(ball->velocityX)
+        ball->velocityX *= -1.0f;
 
-        ball->velocityX *= -1.1f;
     }
-    printf("VelocityY : %f\n", ball->velocityY);
+    /*printf("VelocityY : %f\n", ball->velocityY);
     printf("%d\n", ball->rect.y);
     printf("%d\n", ball->rect.x);
     printf("Y : %f\n", ball->y);
-    printf("X : %f\n", ball->x);
+    printf("X : %f\n", ball->x);*/
     //printf("%f\n", ball->velocityX);
 
     //printf("%d\n", ball->rect.x);
 
-    return ball;
+    /*pg_server->ball = ball;
+    pong_server_send_ball(pg_server);*/
+
 }
 
 pong_ball_t *pong_ball_init(const size_t size, const color_t color) {
@@ -77,7 +87,7 @@ pong_ball_t *pong_ball_init(const size_t size, const color_t color) {
 	return ret;
 }
 
-int pong_ball_draw(pong_ball_t *ball, pong_window_t *window) {
+void pong_ball_draw(pong_ball_t *ball, pong_window_t *window) {
 	SDL_Renderer *ren;
 	color_t *color;
 
@@ -88,5 +98,4 @@ int pong_ball_draw(pong_ball_t *ball, pong_window_t *window) {
 	SDL_RenderFillRect(ren, &(ball->rect));
 	SDL_RenderDrawRect(ren, &(ball->rect));
 
-	return 0;
 }

@@ -57,6 +57,6 @@ void pong_paddle_go_down(pong_paddle_t *paddle) {
 		paddle->rect.y += paddle->velocity;
 	}
 	else{
-		paddle->rect.y = paddle->window->height - paddle->rect.h;
+		paddle->rect.y = (int)paddle->window->height - paddle->rect.h;
 	}
 }
