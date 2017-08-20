@@ -85,15 +85,15 @@ void pong_server_send_won(const pong_server_t *pg_server) {
 	free(msg);
 }
 
-void pong_server_init(pong_server_t *pg_server, const int port, const size_t nb_conn) {
-	pg_server->server = server_init(port, nb_conn);
+void pong_server_init(pong_server_t *pg_server, const int port) {
+	pg_server->server = server_init(port);
 	pg_server->ball = NULL;
 	pg_server->paddle = NULL;
 	pg_server->paddle_c = NULL;
 }
 
-void pong_server_wait_conn(pong_server_t *pg_server) {
-	server_wait_conn(pg_server->server);
+void pong_server_wait_conn(pong_server_t *pg_server, const size_t nb_conn) {
+	server_wait_conn(pg_server->server, nb_conn);
 }
 
 void pong_server_shutdown(pong_server_t *pg_server) {
